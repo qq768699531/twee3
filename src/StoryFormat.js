@@ -5,7 +5,7 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom
 
 const storyFormats = require('./storyFormats/storyFormats')
-const {v4: uuidv4} = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 
 module.exports = class StoryFormat {
     constructor(formatName) {
@@ -78,7 +78,7 @@ module.exports = class StoryFormat {
                 if (this.passages[current_passage]) {
                     if (current_passage !== 'StoryJS' && current_passage !== 'StoryIncludes') console.warn(`SKIPPING! Passage ${current_passage} already exist!!!`)
                 } else {
-                    this.passages[current_passage] = {tags: tags.split(' '), position, content: '', exclude_from_output: false, pid: null}
+                    this.passages[current_passage] = { tags: tags.split(' '), position, content: '', exclude_from_output: false, pid: null }
                 }
 
             } else if (current_passage) {
@@ -152,7 +152,8 @@ module.exports = class StoryFormat {
         storyData = storyData.replace(/\$/g, '%24')
         html = html.replace('{{STORY_DATA}}', storyData)
         html = html.replace(/%24/g, '$')
-        html = html.replace('{{STORY_NAME}}', this.storyName)
+        // fix: SugarCube 2.36.1 has multi {{STORY_NAME}}
+        html = html.replaceAll('{{STORY_NAME}}', this.storyName)
         if (output) fs.writeFileSync(output, html)
         return html
     }
@@ -251,7 +252,7 @@ module.exports = class StoryFormat {
         } else {
             console.error(`WARNING: tried to ::@include file '${filename}' but file was not found.`)
         }
-        return {lines, i}
+        return { lines, i }
     }
 
     compile(input, output, options = {}) {
